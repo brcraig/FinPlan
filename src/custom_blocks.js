@@ -527,12 +527,12 @@ async function convertCurrency(amount, fromCurrency, toCurrency) {
     // Log the result or handle it as needed
     console.log('Converted amount:', convertedAmount);
 
-    // Return the converted amount
-    return convertedAmount;
+    // Return the converted amount wrapped in a Promise
+    return Promise.resolve(convertedAmount);
   } catch (error) {
     console.error('Error converting currency:', error.message);
-    // Handle errors appropriately
-    return null;
+    // Return a rejected Promise with the error
+    return Promise.reject(error);
   }
 }
 
