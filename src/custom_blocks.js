@@ -1,6 +1,7 @@
 // Supporting Functions with UI Updates
 let totalIncome = 0;
 let totalExpenses = 0;
+let totalSaving =0;
 
 // Define the vertical stacking 'income_block'
 Blockly.Blocks['income_block'] = {
@@ -96,9 +97,9 @@ Blockly.JavaScript['expense_block'] = function(block) {
 Blockly.JavaScript['budget_calculator_block'] = function(block) {
   var incomeCode = Blockly.JavaScript.statementToCode(block, 'INCOME');
   var expenseCode = Blockly.JavaScript.statementToCode(block, 'EXPENSES');
-  var savings = Blockly.JavaScript.statementToCode(block, 'SAVINGS');
+  totalSaving = Blockly.JavaScript.statementToCode(block, 'SAVINGS');
   // return 'calculateBudget();\n';
-  var code = 'calculateBudget(${savingsCode})\n';
+  var code = 'calculateBudget()\n';
   console.log('Generated JavaScript code:', code);  // Add this line for debugging
   return code;
 };
@@ -115,8 +116,8 @@ function addExpense(category, amount) {
   //return totalExpenses;
 }
 
-function calculateBudget(savings) {
-  let netBudget = totalIncome - totalExpenses - savings;
+function calculateBudget() {
+  let netBudget = totalIncome - totalExpenses - totalSaving;
   updateBudgetDisplay(netBudget); // Update the budget display on the UI
   console.log('Generated budget: ${netBudget}');
   //return netBudget;
