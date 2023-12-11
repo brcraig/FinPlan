@@ -99,11 +99,15 @@ Blockly.JavaScript['budget_calculator_block'] = function (block) {
   var incomeCode = Blockly.JavaScript.statementToCode(block, 'INCOME');
   var expenseCode = Blockly.JavaScript.statementToCode(block, 'EXPENSES');
   var savings = Blockly.JavaScript.valueToCode(block, 'SAVINGS', Blockly.JavaScript.ORDER_NONE);
-  var code = `calculateBudget(${incomeCode}, ${expenseCode}, ${savings})\n`;
+
+  // Execute the income and expense code snippets to get values
+  eval(incomeCode); // This will update totalIncome
+  eval(expenseCode); // This will update totalExpenses
+
+  var code = `calculateBudget(${totalIncome}, ${totalExpenses}, ${savings})\n`;
   console.log('Generated JavaScript code:', code);  // Add this line for debugging
   return code;
 };
-
 
 function addIncome(source, amount) {
   if (currentBudgetBlock) {
@@ -127,9 +131,9 @@ function addExpense(category, amount) {
   }
 }
 
-function calculateBudget() {
+function calculateBudget(income, expenses, savings) {
   if (currentBudgetBlock) {
-    let netBudget = totalIncome - totalExpenses;
+    let netBudget = income - expenses - savings;
     updateBudgetDisplay(netBudget); // Update the budget display on the UI
   } else {
     console.error("Budget calculation must be connected to a budget block.");
