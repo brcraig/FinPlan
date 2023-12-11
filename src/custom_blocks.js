@@ -503,7 +503,8 @@ Blockly.Blocks['currency_conversion'] = {
 Blockly.JavaScript['currency_conversion'] = function(block) {
   var amount = Blockly.JavaScript.valueToCode(block, 'AMOUNT', Blockly.JavaScript.ORDER_NONE);
   var conversionType = block.getFieldValue('CONVERSION');
-  return ['convertCurrency(' + amount + ', "' + conversionType + '");\n', Blockly.JavaScript.ORDER_ATOMIC];
+  var code = `convertCurrency(${amount}, "${conversionType}").then(result => console.log('Converted amount:', result));\n`;
+  return code;
 };
 
 async function convertCurrency(amount, fromCurrency, toCurrency) {
@@ -534,5 +535,6 @@ async function convertCurrency(amount, fromCurrency, toCurrency) {
     return null;
   }
 }
+
 
 
