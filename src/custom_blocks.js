@@ -1,7 +1,6 @@
 // Supporting Functions with UI Updates
 let totalIncome = 0;
 let totalExpenses = 0;
-let currentBudgetBlock = null; // Initialize currentBudgetBlock to null
 
 // Define the vertical stacking 'income_block'
 Blockly.Blocks['income_block'] = {
@@ -94,59 +93,34 @@ Blockly.JavaScript['expense_block'] = function(block) {
 };
 
 // Define the JavaScript generator for 'budget_calculator_block'
-Blockly.JavaScript['budget_calculator_block'] = function (block) {
-  currentBudgetBlock = block;
+Blockly.JavaScript['budget_calculator_block'] = function(block) {
   var incomeCode = Blockly.JavaScript.statementToCode(block, 'INCOME');
   var expenseCode = Blockly.JavaScript.statementToCode(block, 'EXPENSES');
-  var savings = Blockly.JavaScript.valueToCode(block, 'SAVINGS', Blockly.JavaScript.ORDER_NONE);
-
-  // Execute the income and expense code snippets to get values
-  eval(incomeCode); // This will update totalIncome
-  eval(expenseCode); // This will update totalExpenses
-
-  var code = `calculateBudget(${totalIncome}, ${totalExpenses}, ${savings})\n`;
+  var savings = Blockly.JavaScript.statementToCode(block, 'SAVINGS');
+  // return 'calculateBudget();\n';
+  var code = 'calculateBudget(${incomeCode}, ${expenseCode}, ${savingsCode})\n';
   console.log('Generated JavaScript code:', code);  // Add this line for debugging
   return code;
 };
 
 function addIncome(source, amount) {
-  if (currentBudgetBlock) {
-    totalIncome += amount;
-    updateIncomeDisplay(); // Update the income display on the UI
-    return totalIncome; // Return the updated total income
-  } else {
-    console.error("Income must be connected to a budget block.");
-    return null; // Return null if there is an error
-  }
+  totalIncome += amount;
+  updateIncomeDisplay(); // Update the income display on the UI
+  //return totalIncome;
 }
 
 function addExpense(category, amount) {
-  if (currentBudgetBlock) {
-    totalExpenses += amount;
-    updateExpenseDisplay(); // Update the expense display on the UI
-    return totalExpenses; // Return the updated total expenses
-  } else {
-    console.error("Expense must be connected to a budget block.");
-    return null; // Return null if there is an error
-  }
+  totalExpenses += amount;
+  updateExpenseDisplay(); // Update the expense display on the UI
+  //return totalExpenses;
 }
 
-function calculateBudget(income, expenses, savings) {
-  if (currentBudgetBlock) {
-    let netBudget = income - expenses - savings;
-    updateBudgetDisplay(netBudget); // Update the budget display on the UI
-  } else {
-    console.error("Budget calculation must be connected to a budget block.");
-  }
+function calculateBudget(income, expense, savings) {
+  let netBudget = totalIncome - totalExpenses - savings;
+  updateBudgetDisplay(netBudget); // Update the budget display on the UI
+  //return netBudget;
 }
 
-// Reset currentBudgetBlock when needed (for example, when the program starts)
-function resetCurrentBudgetBlock() {
-  currentBudgetBlock = null;
-}
-
-// Call resetCurrentBudgetBlock when the program starts
-resetCurrentBudgetBlock();
 // Additional UI Update Functions
 function updateIncomeDisplay() {
   document.getElementById('incomeDisplay').textContent = `Total Income: ${totalIncome}`;
@@ -489,7 +463,7 @@ Blockly.Blocks['currency_conversion'] = {
     ];
 
     this.appendValueInput("AMOUNT")
-        .setCheck(null)
+        .setCheck("Number")
         .appendField("Convert");
     this.appendDummyInput()
         .appendField(new Blockly.FieldDropdown(dropdownOptions), "CONVERSION");
@@ -503,38 +477,26 @@ Blockly.Blocks['currency_conversion'] = {
 Blockly.JavaScript['currency_conversion'] = function(block) {
   var amount = Blockly.JavaScript.valueToCode(block, 'AMOUNT', Blockly.JavaScript.ORDER_NONE);
   var conversionType = block.getFieldValue('CONVERSION');
-  var code = `convertCurrency(${amount}, "${conversionType}").then(result => console.log('Converted amount:', result));\n`;
-  return code;
+  return ['convertCurrency(' + amount + ', "' + conversionType + '");\n', Blockly.JavaScript.ORDER_ATOMIC];
 };
 
-async function convertCurrency(amount, fromCurrency, toCurrency) {
-  try {
-    const accessKey = '7e937d9868804a07b51a7d3c065ee2b7';  // Replace 'API_KEY' with your actual API key
-
-    const response = await fetch(`https://api.exchangeratesapi.io/v1/convert?access_key=${accessKey}&from=${fromCurrency}&to=${toCurrency}&amount=${amount}`, {
-      method: 'GET',
-    });
-
-    if (!response.ok) {
-      throw new Error(`HTTP error! Status: ${response.status}`);
-    }
-
-    const data = await response.json();
-
-    // Assuming the API returns the converted amount
-    const convertedAmount = data.result;
-
-    // Log the result or handle it as needed
-    console.log('Converted amount:', convertedAmount);
-
-    // Return the converted amount wrapped in a Promise
-    return Promise.resolve(convertedAmount);
-  } catch (error) {
-    console.error('Error converting currency:', error.message);
-    // Return a rejected Promise with the error
-    return Promise.reject(error);
+// Conversion Function (replace with actual conversion logic)
+function convertCurrency(amount, conversionType) {
+  // Check if the conversion type is valid
+  if (!(conversionType in exchangeRates)) {
+    console.error('Invalid conversion type:', conversionType);
+    return null;
   }
+
+  // Get the exchange rate
+  var exchangeRate = exchangeRates[conversionType];
+
+  // Perform the currency conversion
+  var convertedAmount = amount * exchangeRate;
+
+  // Log the result (replace with actual handling logic)
+  console.log('Converted amount:', convertedAmount);
+
+  // Return the converted amount
+  return convertedAmount;
 }
-
-
-
