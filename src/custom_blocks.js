@@ -93,31 +93,41 @@ Blockly.JavaScript['expense_block'] = function(block) {
 };
 
 // Define the JavaScript generator for 'budget_calculator_block'
-Blockly.JavaScript['budget_calculator_block'] = function(block) {
+Blockly.JavaScript['budget_calculator_block'] = function (block) {
   var incomeCode = Blockly.JavaScript.statementToCode(block, 'INCOME');
   var expenseCode = Blockly.JavaScript.statementToCode(block, 'EXPENSES');
-  // return 'calculateBudget();\n';
-  var code = 'calculateBudget()\n';
+  var savings = Blockly.JavaScript.valueToCode(block, 'SAVINGS', Blockly.JavaScript.ORDER_NONE);
+  var code = `calculateBudget(${incomeCode}, ${expenseCode}, ${savings})\n`;
   console.log('Generated JavaScript code:', code);  // Add this line for debugging
   return code;
 };
 
+
 function addIncome(source, amount) {
-  totalIncome += amount;
-  updateIncomeDisplay(); // Update the income display on the UI
-  //return totalIncome;
+  if (currentBudgetBlock) {
+    totalIncome += amount;
+    updateIncomeDisplay(); // Update the income display on the UI
+  } else {
+    console.error("Income must be connected to a budget block.");
+  }
 }
 
 function addExpense(category, amount) {
-  totalExpenses += amount;
-  updateExpenseDisplay(); // Update the expense display on the UI
-  //return totalExpenses;
+  if (currentBudgetBlock) {
+    totalExpenses += amount;
+    updateExpenseDisplay(); // Update the expense display on the UI
+  } else {
+    console.error("Expense must be connected to a budget block.");
+  }
 }
 
 function calculateBudget() {
-  let netBudget = totalIncome - totalExpenses;
-  updateBudgetDisplay(netBudget); // Update the budget display on the UI
-  //return netBudget;
+  if (currentBudgetBlock) {
+    let netBudget = totalIncome - totalExpenses;
+    updateBudgetDisplay(netBudget); // Update the budget display on the UI
+  } else {
+    console.error("Budget calculation must be connected to a budget block.");
+  }
 }
 
 // Additional UI Update Functions
