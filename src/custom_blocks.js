@@ -506,23 +506,33 @@ Blockly.JavaScript['currency_conversion'] = function(block) {
   return ['convertCurrency(' + amount + ', "' + conversionType + '");\n', Blockly.JavaScript.ORDER_ATOMIC];
 };
 
-// Conversion Function (replace with actual conversion logic)
-function convertCurrency(amount, conversionType) {
-  // Check if the conversion type is valid
-  if (!(conversionType in exchangeRates)) {
-    console.error('Invalid conversion type:', conversionType);
+async function convertCurrency(amount, fromCurrency, toCurrency) {
+  try {
+    const accessKey = '7e937d9868804a07b51a7d3c065ee2b7';  // Replace 'API_KEY' with your actual API key
+
+    const response = await fetch(`https://api.exchangeratesapi.io/v1/convert?access_key=${accessKey}&from=${fromCurrency}&to=${toCurrency}&amount=${amount}`, {
+      method: 'GET',
+    });
+
+    if (!response.ok) {
+      throw new Error(`HTTP error! Status: ${response.status}`);
+    }
+
+    const data = await response.json();
+
+    // Assuming the API returns the converted amount
+    const convertedAmount = data.result;
+
+    // Log the result or handle it as needed
+    console.log('Converted amount:', convertedAmount);
+
+    // Return the converted amount
+    return convertedAmount;
+  } catch (error) {
+    console.error('Error converting currency:', error.message);
+    // Handle errors appropriately
     return null;
   }
-
-  // Get the exchange rate
-  var exchangeRate = exchangeRates[conversionType];
-
-  // Perform the currency conversion
-  var convertedAmount = amount * exchangeRate;
-
-  // Log the result (replace with actual handling logic)
-  console.log('Converted amount:', convertedAmount);
-
-  // Return the converted amount
-  return convertedAmount;
 }
+
+
