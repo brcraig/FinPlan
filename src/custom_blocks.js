@@ -98,7 +98,7 @@ Blockly.JavaScript['budget_calculator_block'] = function(block) {
   var expenseCode = Blockly.JavaScript.statementToCode(block, 'EXPENSES');
   var savings = Blockly.JavaScript.statementToCode(block, 'SAVINGS');
   // return 'calculateBudget();\n';
-  var code = 'calculateBudget(${incomeCode}, ${expenseCode}, ${savingsCode})\n';
+  var code = 'calculateBudget(${savingsCode})\n';
   console.log('Generated JavaScript code:', code);  // Add this line for debugging
   return code;
 };
@@ -115,7 +115,7 @@ function addExpense(category, amount) {
   //return totalExpenses;
 }
 
-function calculateBudget(income, expense, savings) {
+function calculateBudget(savings) {
   let netBudget = totalIncome - totalExpenses - savings;
   updateBudgetDisplay(netBudget); // Update the budget display on the UI
   console.log('Generated budget: ${netBudget}');
