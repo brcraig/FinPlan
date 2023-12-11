@@ -97,7 +97,7 @@ Blockly.JavaScript['expense_block'] = function(block) {
 Blockly.JavaScript['budget_calculator_block'] = function(block) {
   var incomeCode = Blockly.JavaScript.statementToCode(block, 'INCOME');
   var expenseCode = Blockly.JavaScript.statementToCode(block, 'EXPENSES');
-  totalSaving = Blockly.JavaScript.statementToCode(block, 'SAVINGS');
+  var totalSavingCode = Blockly.JavaScript.valueToCode(block, 'SAVINGS', Blockly.JavaScript.ORDER_ATOMIC);
   // return 'calculateBudget();\n';
   var code = 'calculateBudget()\n';
   console.log('Generated JavaScript code:', code);  // Add this line for debugging
