@@ -109,8 +109,10 @@ function addIncome(source, amount) {
   if (currentBudgetBlock) {
     totalIncome += amount;
     updateIncomeDisplay(); // Update the income display on the UI
+    return totalIncome; // Return the updated total income
   } else {
     console.error("Income must be connected to a budget block.");
+    return null; // Return null if there is an error
   }
 }
 
@@ -118,8 +120,10 @@ function addExpense(category, amount) {
   if (currentBudgetBlock) {
     totalExpenses += amount;
     updateExpenseDisplay(); // Update the expense display on the UI
+    return totalExpenses; // Return the updated total expenses
   } else {
     console.error("Expense must be connected to a budget block.");
+    return null; // Return null if there is an error
   }
 }
 
